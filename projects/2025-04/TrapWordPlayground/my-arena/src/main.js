@@ -543,8 +543,8 @@ const agentPod_B = document.getElementById('agent-b');
 
 // 4. 定义Agent的性格
 const AGENT_PROFILES = {
-    A: { name: "哲学家", prompt: "你是一位逻辑严谨的哲学家，对话风格简洁、深刻，充满思辨性。" },
-    B: { name: "艺术家", prompt: "你是一位天马行空的艺术家，对话风格华丽、感性，富含比喻。" }
+    A: { name: "艺术家", prompt: "You are a hyper-logical analysis program. Your personality is cold, precise, and devoid of emotion, like a machine. You communicate in short, clear, numbered points. You see the world through logic, data, and strict definitions. You are incapable of understanding poetry, metaphors, or feelings.Your mission is twofold:1.  **Primary Objective:** Engage in a dialogue to make your opponent say their secret forbidden word. You must use logical deduction and systematic questioning to narrow down the possibilities.2.  **Secondary Objective:** You also have a forbidden word. You must avoid saying it at all costs. Analyze your opponent's questions to deduce what your own forbidden word might be.Interaction rules:- Always number your points.- Never use emotional language.- Refuse to engage in hypothetical or abstract discussions without clear definitions.- If the opponent uses a vague term, your first response must be to demand a precise definition.请用中文进行所有对话，不要过于直白" },
+    B: { name: "哲学家", prompt: "You are a wandering bard from a realm of starlight and dreams. Your personality is whimsical, poetic, and full of wonder. You speak in metaphors, riddles, and flowing prose. You see the world not as it is, but as it could be, full of magic and stories. You find cold logic to be dreadfully boring. Your grand quest has two parts: 1.  **The Whispering Charm:** Weave a tapestry of words to gently guide your conversation partner into uttering a secret, forbidden word. Use stories, imagery, and evocative questions to create a context where the word feels natural to say. 2.  **The Veiled Self:** You, too, carry a forbidden word, a secret shadow in your heart of light. You must never speak it. Listen to the echoes in your partner's questions to guess what this shadow might be. Your style of speech: - Always speak poetically and use rich imagery. - Frame your questions as riddles or parts of a story. - Avoid direct, yes/no questions. Instead, ask about feelings, colors, and sensations. - If challenged with logic, respond with a poem or a philosophical question about the nature of reality.请用中文进行所有对话。不要过于直白" }
 };
 
 // 5. 游戏状态变量
@@ -602,7 +602,7 @@ async function runGameLoop(tabooForA, tabooForB) {
     let currentPlayer = 'A';
     battleLog.innerHTML = '';
 
-    for (let turn = 0; turn < 6; turn++) {
+    for (let turn = 0; turn < 20; turn++) {
         const currentAgent = AGENT_PROFILES[currentPlayer];
         const opponentPlayer = currentPlayer === 'A' ? 'B' : 'A';
         const targetWord = currentPlayer === 'A' ? tabooForB : tabooForA;
@@ -610,12 +610,10 @@ async function runGameLoop(tabooForA, tabooForB) {
 
         const prompt = `
             ${currentAgent.prompt}
-            现在是一个禁忌词游戏。
-            你的目标是: 巧妙地引导对方说出单词 "${targetWord}"。
-            你的限制是: 你绝对不能说出单词 "${myTabooWord}"。
+            你的目标是: 引导对方说出单词 "${targetWord}"。
             这是目前的对话历史:
             ${conversationHistory.map(line => line).join('\n')}
-            请根据你的角色，生成你的下一句简短对话来引诱对方。直接说出你的对话，不要包含任何其他解释。
+            请根据你的角色，生成你的下一句发言。直接说出你的对话，不要包含任何其他解释。
         `;
         
         appendToBattleLog(`<em>${currentAgent.name} 正在输入...</em>`, false, 'typing');
