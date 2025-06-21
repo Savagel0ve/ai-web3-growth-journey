@@ -5,7 +5,7 @@ import { ethers } from "ethers";
 
 
 
-const contractAddress = "0x473044267A992914bB2EF92F0DCD6F25F3560965"; // 粘贴你刚刚部署的合约地址
+const contractAddress = "0x6395b1c9e62fb16031e1c83abaa9d0c520bb35c6"; // 粘贴你刚刚部署的合约地址
 const contractABI = [
 	{
 		"inputs": [],
@@ -420,6 +420,8 @@ const appHTML = `
     <div class="wallet-controls">
       <button id="connect-wallet-btn">连接钱包</button>
       <span id="wallet-address" style="display:none;"></span>
+     <button id="mint-btn">铸造NFT</button> <!-- ✅ 这是你需要的 -->
+    <span id="wallet-address" style="display:none;"></span>
     </div>
   </header>
 
@@ -454,83 +456,86 @@ const appHTML = `
   </footer>
 `;
 
-// const connectWalletBtn = document.getElementById('connect-wallet-btn');
-// const walletAddressSpan = document.getElementById('wallet-address');
-// const mintBtn = document.getElementById('mint-btn'); // 稍后我们会用到‘
+
+document.querySelector('#app').innerHTML = appHTML;
+
+const connectWalletBtn = document.getElementById('connect-wallet-btn');
+const walletAddressSpan = document.getElementById('wallet-address');
+const mintBtn = document.getElementById('mint-btn'); // 稍后我们会用到‘
 
 
 
-// async function mintNFT() {
-//   if (!signer) {
-//     alert("请先连接钱包！");
-//     return;
-//   }
+async function mintNFT() {
+  if (!signer) {
+    alert("请先连接钱包！");
+    return;
+  }
   
-//   mintBtn.disabled = true;
-//   mintBtn.textContent = "铸造中...";
+  mintBtn.disabled = true;
+  mintBtn.textContent = "铸造中...";
 
-//   try {
-//     const contract = new ethers.Contract(contractAddress, contractABI, signer);
-//     const userAddress = await signer.getAddress();
+  try {
+    const contract = new ethers.Contract(contractAddress, contractABI, signer);
+    const userAddress = await signer.getAddress();
     
-//     console.log("正在调用 safeMint 函数...");
-//     const tx = await contract.safeMint(userAddress);
+    console.log("正在调用 safeMint 函数...");
+    const tx = await contract.safeMint(userAddress);
     
-//     console.log("交易已发送，等待确认...", tx.hash);
-//     await tx.wait(); // 等待交易被区块链确认
+    console.log("交易已发送，等待确认...", tx.hash);
+    await tx.wait(); // 等待交易被区块链确认
     
-//     console.log("铸造成功！");
-//     alert("恭喜你，成功铸造了你的AI Agent NFT！");
-//     mintBtn.textContent = "铸造成功!";
+    console.log("铸造成功！");
+    alert("恭喜你，成功铸造了你的AI Agent NFT！");
+    mintBtn.textContent = "铸造成功!";
 
-//   } catch (error) {
-//     console.error("铸造失败:", error);
-//     alert("铸造失败，详情请看控制台。");
-//     mintBtn.disabled = false;
-//     mintBtn.textContent = "铸造我的Agent NFT";
-//   }
-// }
+  } catch (error) {
+    console.error("铸造失败:", error);
+    alert("铸造失败，详情请看控制台。");
+    mintBtn.disabled = false;
+    mintBtn.textContent = "铸造我的Agent NFT";
+  }
+}
 
-// // ... 在获取DOM元素的代码块中，为mintBtn绑定事件
-// mintBtn.addEventListener('click', mintNFT);
+// ... 在获取DOM元素的代码块中，为mintBtn绑定事件
+mintBtn.addEventListener('click', mintNFT);
 
 
-// let signer = null;
-// let provider = null;
+let signer = null;
+let provider = null;
 
-// async function connectWallet() {
-//   if (typeof window.ethereum === 'undefined') {
-//     alert('请先安装MetaMask!');
-//     return;
-//   }
+async function connectWallet() {
+  if (typeof window.ethereum === 'undefined') {
+    alert('请先安装MetaMask!');
+    return;
+  }
   
-//   try {
-//     // 请求用户授权
-//     provider = new ethers.BrowserProvider(window.ethereum);
-//     signer = await provider.getSigner();
+  try {
+    // 请求用户授权
+    provider = new ethers.BrowserProvider(window.ethereum);
+    signer = await provider.getSigner();
     
-//     const address = await signer.getAddress();
+    const address = await signer.getAddress();
     
-//     // 更新UI
-//     connectWalletBtn.style.display = 'none';
-//     walletAddressSpan.style.display = 'inline';
-//     walletAddressSpan.textContent = `...${address.slice(-4)}`;
-//     mintBtn.style.display = 'inline-block'; // 显示铸造按钮
+    // 更新UI
+    connectWalletBtn.style.display = 'none';
+    walletAddressSpan.style.display = 'inline';
+    walletAddressSpan.textContent = `...${address.slice(-4)}`;
+    mintBtn.style.display = 'inline-block'; // 显示铸造按钮
     
-//     console.log("钱包已连接:", address);
+    console.log("钱包已连接:", address);
     
-//   } catch (error) {
-//     console.error("连接钱包失败:", error);
-//     alert("连接钱包失败!");
-//   }
-// }
+  } catch (error) {
+    console.error("连接钱包失败:", error);
+    alert("连接钱包失败!");
+  }
+}
 
-// connectWalletBtn.addEventListener('click', connectWallet);
+connectWalletBtn.addEventListener('click', connectWallet);
 
 
 
 // 2. 将HTML结构注入到根DOM元素中
-document.querySelector('#app').innerHTML = appHTML;
+
 
 
 // 3. 获取所有需要操作的DOM元素
